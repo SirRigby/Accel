@@ -20,7 +20,7 @@ The operation sequence {op<sub>0</sub>,op<sub>1</sub>,...,op<sub>n</sub>} will b
   + All the operations should be associative
   + op<sub>r</sub> should be distributive over op<sub>k</sub> if r<k
 
-### Optional Requirements
+### Optional Requirements:
    + All the operations should have an identity element
 
 <b>Time complexity for the computation: </b> d * comp * log(n), where d is the number of operators and comp the maximum time complexity among the operations
