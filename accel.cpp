@@ -54,8 +54,8 @@ class Accel{
 
             for(int i=1;i<result.valueList.size();i++){
                 R postFactor= (instance.*(instance.functionList[i-1]))(cummulant,y.valueList[i]);
+                cummulant=(instance.*(instance.functionList[i]))(cummulant,x.valueList[i]);
                 result.valueList[i]=(instance.*(instance.functionList[i]))(result.valueList[i],postFactor);
-                cummulant=(instance.*(instance.functionList[i-1]))(cummulant,x.valueList[i]);
             }
             
             return result;
@@ -141,11 +141,11 @@ class OperatorClass{
         vector<R (OperatorClass::*)(R,R)> functionList;
 
         R f0(R x, R y){
-            return (1LL*x*y)%500;
+            return x*y;
         }
 
         R f1(R x, R y){
-            return x*y;
+            return x+y;
         }
 
         R f2(R x, R y){
@@ -158,10 +158,10 @@ class OperatorClass{
             identities.push_back(1);
 
             functionList.push_back(&f1);
-            identities.push_back(1);
+            identities.push_back(0);
 
-            functionList.push_back(&f2);
-            identities.push_back(1);
+            // functionList.push_back(&f2);
+            // identities.push_back(1);
 
         }
 
@@ -176,6 +176,6 @@ class OperatorClass{
 
 int main(){
     Accel<OperatorClass> a;
-    cout<<a.calcerate(2,3,3);
+    cout<<a.calcerate(2,5,3);
     return 0;
 }
