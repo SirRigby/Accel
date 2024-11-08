@@ -71,7 +71,7 @@ class Accel{
 
         Accel(T& instance1) : instance(instance1), operatorSize(instance.functionList.size()) {}
 
-        R calcerate(R& operand, int n){
+        R calcerate(R& operand, long long n){
             
             if(n<=0){
                 return instance.id;
@@ -87,12 +87,12 @@ class Accel{
 
         }
 
-        R calcerate(R&& operand, int n){
+        R calcerate(R&& operand, long long n){
             R operand1=operand;
             return calcerate(operand1,n);
         }
 
-        R calcerate(R& operand, int n, R& startingPoint){
+        R calcerate(R& operand, long long n, R& startingPoint){
 
             if(n<=0){
                 return instance.id;
@@ -108,7 +108,7 @@ class Accel{
             
         }
 
-        R calcerate(R&& operand, int n, R&& startingPoint){
+        R calcerate(R&& operand, long long n, R&& startingPoint){
 
             R operand1=operand;
             R startingPoint1=startingPoint;
@@ -123,60 +123,18 @@ template <typename R>
 class OperatorClass{
 
     public:
-
-
         R id;
         R val;
         vector<R> identities;
         vector<R (*)(R,R)> functionList;
-
-        // R f0(R x, R y){
-        //     return x*y;
-        // }
-
-        // R f1(R x, R y){
-        //     return x+y;
-        // }
-
-        // R f2(R x, R y){
-        //     return x*y;
-        // }
         
         OperatorClass(vector<R (*) (R,R)> &functionList1,vector<R> &identities1){
 
             functionList=functionList1;
             identities=identities1;
-            // functionList.push_back(&f0);
-            // identities.push_back(1);
-
-            // functionList.push_back(&f1);
-            // identities.push_back(0);
-
-            // functionList.push_back(&f2);
-            // identities.push_back(1);
 
         }
 
-        OperatorClass(){
-
-        }
+        OperatorClass(){}
 
 };
-
-int M0;
-
-
-int f(int a, int b) {
-    return (1LL * a * b) % M0;
-}
-
-int main() {
-    vector<int> id={1};
-    M0=100;
-    vector<int (*) (int,int)> fn={&f};
-    OperatorClass<int> op(fn,id);
-    Accel<OperatorClass<int>> a(op);
-
-    cout << a.calcerate(2,6);
-    return 0;
-}

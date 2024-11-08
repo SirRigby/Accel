@@ -1,4 +1,6 @@
 #include<iostream>
+#include<bitset>
+#include<map>
 #include<vector>
 using namespace std;
 
@@ -71,7 +73,7 @@ class Accel{
 
         Accel(T& instance1) : instance(instance1), operatorSize(instance.functionList.size()) {}
 
-        R calcerate(R& operand, int n){
+        R calcerate(R& operand, long long n){
             
             if(n<=0){
                 return instance.id;
@@ -87,12 +89,12 @@ class Accel{
 
         }
 
-        R calcerate(R&& operand, int n){
+        R calcerate(R&& operand, long long n){
             R operand1=operand;
             return calcerate(operand1,n);
         }
 
-        R calcerate(R& operand, int n, R& startingPoint){
+        R calcerate(R& operand, long long n, R& startingPoint){
 
             if(n<=0){
                 return instance.id;
@@ -108,7 +110,7 @@ class Accel{
             
         }
 
-        R calcerate(R&& operand, int n, R&& startingPoint){
+        R calcerate(R&& operand, long long n, R&& startingPoint){
 
             R operand1=operand;
             R startingPoint1=startingPoint;
@@ -123,60 +125,86 @@ template <typename R>
 class OperatorClass{
 
     public:
-
-
         R id;
         R val;
         vector<R> identities;
         vector<R (*)(R,R)> functionList;
-
-        // R f0(R x, R y){
-        //     return x*y;
-        // }
-
-        // R f1(R x, R y){
-        //     return x+y;
-        // }
-
-        // R f2(R x, R y){
-        //     return x*y;
-        // }
         
         OperatorClass(vector<R (*) (R,R)> &functionList1,vector<R> &identities1){
 
             functionList=functionList1;
             identities=identities1;
-            // functionList.push_back(&f0);
-            // identities.push_back(1);
-
-            // functionList.push_back(&f1);
-            // identities.push_back(0);
-
-            // functionList.push_back(&f2);
-            // identities.push_back(1);
 
         }
 
-        OperatorClass(){
-
-        }
+        OperatorClass(){}
 
 };
 
-int M0;
 
+int w;
 
-int f(int a, int b) {
-    return (1LL * a * b) % M0;
+template<int len=1>
+struct F{
+    static pair<bitset<len+1>,int> f0(pair<bitset<len+1>,int> a,pair<bitset<len+1>,int> b){
+        auto c=b;
+        c.second+=a.second;
+        c.first=c.first<<(w*(a.second));
+        return c;
+    }
+    static pair<bitset<len+1>,int> f1(pair<bitset<len+1>,int> a,pair<bitset<len+1>,int> b){
+        auto c=a;
+        c.first|=b.first;
+        return c;
+    }
+};
+
+static const int MAXN=100000;
+template<int len=1>
+void f(int m,vector<int> &ap){
+    if(len < m) {
+        f<min(len<<1,MAXN)>(m,ap);
+        return;
+    } 
+    typedef bitset<len+1> bit;
+    map<int,int> mp;
+    for(auto i:ap){
+        mp[i]++;
+    }
+
+    vector<pair<bit,int>> idv={{bit(1),0}};
+    vector<pair<bit,int>(*) (pair<bit,int>,pair<bit, int>)> fn = {&F<len>::f0,&F<len>::f1};
+    OperatorClass<pair<bit, int>> op(fn, idv); 
+    Accel<OperatorClass<pair<bit, int>>> a(op);
+    pair<bit,int> app={bit(1),1};
+    for(auto i:mp){
+        w=i.first;
+        (app.first)|=(app.first)<<w;
+        app.first|=a.calcerate(app,i.second).first;
+    }
+    // cout<<app.first<<endl;
+    vector<int> p;
+    for(int i=1;i<=len;i++){
+        if(app.first[i]){
+            p.push_back(i);
+        }
+    }
+    cout<<p.size()<<endl;
+    for(auto i:p){
+        cout<<i<<" ";
+    }
 }
 
-int main() {
-    vector<int> id={1};
-    M0=100;
-    vector<int (*) (int,int)> fn={&f};
-    OperatorClass<int> op(fn,id);
-    Accel<OperatorClass<int>> a(op);
-
-    cout << a.calcerate(2,6);
+int main(){
+    int n;cin>>n;
+    vector<int> r(n);
+    for(auto &i:r){
+        cin>>i;
+    }
+    int z=0;
+    for(auto i:r){
+        z+=i;
+    }
+    f(z,r);
     return 0;
 }
